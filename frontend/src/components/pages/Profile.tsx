@@ -55,17 +55,9 @@ export const Profile: FunctionComponent = () => {
   const [following, setFollowing] = useState<boolean>(false);
   const [userData, setUserData] = useState<User | null>(null);
   const [myData, setMyData] = useState<User | null>(null);
-  //const [profileUsername, setProfileUsername] = useState<string>('');
-  const navigate = useNavigate();
 
-  // new
-  // const [currentUser] = useState<string>( localStorage.getItem('username') || '');
-  // useEffect(() => {
-  const username = window.location.pathname.split('/').pop() || '';
-  //setProfileUsername(username);
-  //fetchProfile(); // Fetch profile when username changes
-  //}, [window.location.pathname]); // Remove separate useEffect for fetchProfile
-  //
+  const navigate = useNavigate();
+  const username = window.location.pathname.split('/').pop();
 
   const fetchProfile = async () => {
     if (!accessToken && !refreshToken) return;
@@ -75,7 +67,6 @@ export const Profile: FunctionComponent = () => {
 
     // the route should include a ${username} param to fetch the user's data
     try {
-      //const username = window.location.pathname.split('/').pop();
       let response = await fetch(`http://localhost:8000/api/user/${username}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +77,6 @@ export const Profile: FunctionComponent = () => {
       }
       const userData = await response.json();
       console.log('User Data:', userData);
-
       setUserData(userData);
       // spotifyId of the user you want to fetch (could be you, or someone else, doesn't matter just a parm to profile component)
       const userSpotifyId = userData.spotifyId;
@@ -168,7 +158,6 @@ export const Profile: FunctionComponent = () => {
     if (!accessToken && !refreshToken) return;
 
     try {
-      //const username = window.location.pathname.split('/').pop();
       const updatedUserData = {
         isPrivate: !userData?.isPrivate,
       };
