@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { PlaylistWidget } from '../../DashboardComponents/PlaylistWidget';
+import { PlaylistWidget } from '../pages/DashboardComponents/PlaylistWidget';
+import { getAccessToken } from './SpotifyAuth';
 
 export interface Widget {
   id: string;
@@ -85,6 +86,62 @@ export const fetchPlaylists = async (
   }
 };
 
+// Pinning playlist
+export const togglePinPlaylist = async (
+  username: string,
+  playlistId: string
+) => {
+  try {
+    const token = localStorage.getItem('jwttoken');
+    if (!token) {
+      throw new Error('JWT token is missing');
+    }
+
+    const response = await axios.put(
+      `http://localhost:8000/api/profile/pinPlaylist/${username}/${playlistId}`,
+      {},
+      {
+        headers: { authorization: token },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error toggling pinned playlist:', error);
+    throw error;
+  }
+};
+
+export const fetchPinPlaylist = async (
+  username: string
+): Promise<WidgetData[]> => {
+  try {
+    // Fetch pinned playlists from your backend
+    const response = await axios.get<PlaylistResponse>(
+      `http://localhost:8000/profile/getPinnedPlaylists`,
+      { params: { user: username } }
+    );
+
+    const data = response.data;
+    console.log('Pinned Playlists:', data);
+
+    // Fetch cover image for each playlist from Spotify API
+    const pinnedPlaylists: WidgetData[] = data.items
+      .filter((playlist: PlaylistData) => playlist)
+      .map((playlist: PlaylistData) => ({
+        id: playlist.id,
+        cover: playlist.images[0]?.url || '',
+        owner: playlist.owner,
+        title: playlist.name,
+      }));
+
+    return pinnedPlaylists;
+  } catch (error) {
+    console.error('Error fetching pinned playlists from user:', error);
+    return [];
+  }
+};
+
 export const buildWidgets = async (
   playlists: WidgetData[],
   accessToken: string
@@ -154,7 +211,7 @@ export const buildWidgets = async (
         genres: topGenres,
         component: (
           <PlaylistWidget
-            key={playlist.id}
+            playlistId={playlist.id}
             cover={playlist.cover}
             owner={playlist.owner.display_name}
             title={playlist.title}
@@ -193,12 +250,26 @@ export const returnWidgets = async (): Promise<Widget[]> => {
     console.error('No access token found');
     return [];
   }
+  // check if the widget (playlist) data exists in local storage
+  // if not, this means the user has either cleared their local storage or has not visited the dashboard yet
+  // if the data does not exist, fetch the playlist data from the spotify api and build the widgets
+  let playlists_with_genres: Widget[] = [];
+  if (localStorage.getItem('widget_data') === null) {
+    //first time loading into dashboard
+    const playlists_data = await fetchPlaylists(accessToken);
+    // save the data to local storage
+    localStorage.setItem('widget_data', JSON.stringify(playlists_data));
 
-  const playlists_data = await fetchPlaylists(accessToken);
-  console.log(playlists_data);
-
-  const playlists_with_genres = await buildWidgets(playlists_data, accessToken);
-
+    playlists_with_genres = await buildWidgets(playlists_data, accessToken);
+  } else {
+    // use the local storage data to build the widgets
+    // buildWidgets expects an array of WidgetData[]
+    console.log('utilizing local storage to build widgets');
+    const localWidgetsData: WidgetData[] = JSON.parse(
+      localStorage.getItem('widget_data') || '[]'
+    );
+    playlists_with_genres = await buildWidgets(localWidgetsData, accessToken);
+  }
   // returns Widget[] type
   return playlists_with_genres;
 };

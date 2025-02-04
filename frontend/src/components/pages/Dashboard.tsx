@@ -138,6 +138,7 @@ export const Dashboard = () => {
           disableUnderline
           fullWidth
           sx={{
+            width: '30ch',
             borderRadius: '20px',
             backgroundColor: 'white',
             padding: '5px 15px',

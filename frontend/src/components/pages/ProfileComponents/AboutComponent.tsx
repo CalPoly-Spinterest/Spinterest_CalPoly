@@ -32,13 +32,9 @@ interface AbtFavResponse {
 
 interface AboutComponentProps {
   isOwnProfile: boolean;
-  profileUsername: string;
 }
 
-const AboutComponent: React.FC<AboutComponentProps> = ({
-  isOwnProfile,
-  profileUsername,
-}) => {
+const AboutComponent: React.FC<AboutComponentProps> = ({ isOwnProfile }) => {
   const [isEditable, setIsEditable] = useState(false);
   const [location, setLocation] = useState('');
   const [links, setLinks] = useState('');
@@ -51,15 +47,24 @@ const AboutComponent: React.FC<AboutComponentProps> = ({
   const [favalb2, setText6] = useState('');
   const fetchData = async () => {
     try {
-      // Use profileUsername instead of localStorage
+      const username = localStorage.getItem('username');
+
+      if (!username) {
+        console.error('No username found');
+        return;
+      }
+
       const responseAbtFav = await axios.get<AbtFavResponse>(
-        'http://localhost:8000/profile/logProfileInput',
-        { params: { username: profileUsername } }
+        'http://localhost:8000/api/profile/logProfileInput',
+        { params: { username } }
       );
 
       const dataFields = responseAbtFav.data;
 
-      // Existing data setting logic remains the same
+      // Log the fetched data to verify
+      console.log('Fetched Data:', dataFields);
+
+      // Set the state with the fetched data
       setLocation(dataFields.location);
       setLinks(dataFields.links);
       setBiography(dataFields.biography);
@@ -76,7 +81,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, [profileUsername]);
+  }, []);
 
   const handleIconClick = async () => {
     const updatedData = {
@@ -91,9 +96,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({
       favalb2: favalb2 || '',
     };
 
-    const username = isOwnProfile
-      ? profileUsername
-      : localStorage.getItem('username');
+    const username = localStorage.getItem('username');
     if (!username) {
       console.error('No username found');
       return;
@@ -112,7 +115,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({
     }
 
     try {
-      await axios.post('http://localhost:8000/profile/logProfileInput', {
+      await axios.post('http://localhost:8000/api/profile/logProfileInput', {
         ...updatedData,
         username,
       });

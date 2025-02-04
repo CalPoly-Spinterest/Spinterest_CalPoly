@@ -15,6 +15,7 @@ export interface IUser {
   favorites: IFavorites;
   favoritesId: mongoose.Types.ObjectId;
   annotatedPlaylists?: IPlaylist[];
+  pinnedPlaylists?: string[];
   following: mongoose.Types.ObjectId[];
   followers: mongoose.Types.ObjectId[];
 }
@@ -30,6 +31,7 @@ export const UserSchema = new mongoose.Schema({
   links: String,
   refreshToken: String,
   favoritesId: { type: mongoose.Schema.Types.ObjectId, ref: 'Favorites' },
+  pinnedPlaylists: [{ type: String }],
   annotatedPlaylists: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' },
   ],

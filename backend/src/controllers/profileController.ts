@@ -1,9 +1,7 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import { IUser } from '../models/User';
 import { getModel } from '../utils/connection';
 import { IFavorites } from '../models/Favorites';
-
-const profileController = Router();
 
 /**
  * Updates profile page attributes (status, about section, favorites)
@@ -148,5 +146,102 @@ export const getProfilePgInfo = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching profile input:', error);
     res.status(500).json({ message: 'Error fetching profile input' });
+  }
+};
+
+/**
+ * Pinning music to the user's pinned music list
+ * @param req
+ * @param res
+ * @returns
+ */
+export const pinPlaylist = async (req: Request, res: Response) => {
+  try {
+    const UserModel = getModel<IUser>('User');
+    const { username, playlistId } = req.params;
+
+    console.log('Received request to pin/unpin playlist:', {
+      username,
+      playlistId,
+    });
+
+    // Find the user by username
+    const user = await UserModel.findOne({ username }).populate(
+      'pinnedPlaylists'
+    );
+    //console.log('Found user:', user);
+
+    if (!user) {
+      console.error('User not found');
+      res.status(404).send('User not found');
+      return;
+    }
+
+    if (!user.pinnedPlaylists) {
+      user.pinnedPlaylists = [];
+    }
+
+    console.log('Current pinned playlists:', user.pinnedPlaylists);
+
+    // Check if playlist is already pinned
+    const playlistIndex = user.pinnedPlaylists.findIndex(
+      (id) => id != null && id.toString() === playlistId.toString()
+    );
+
+    if (playlistIndex >= 0) {
+      console.log('Unpinning playlist');
+      user.pinnedPlaylists.splice(playlistIndex, 1);
+    } else if (playlistId !== null) {
+      console.log('Pinning playlist');
+      user.pinnedPlaylists.push(playlistId);
+    } else {
+      console.error('Cannot pin null playlist');
+    }
+
+    // Save the user
+    await user.save();
+    console.log('Updated pinned playlists:', user.pinnedPlaylists);
+
+    res.status(200).send({
+      message: 'Pin status updated',
+      pinnedPlaylists: user.pinnedPlaylists,
+    });
+  } catch (err) {
+    console.error('Error pinning playlist:', err);
+    res.status(500).send('Error pinning playlist');
+  }
+};
+
+/**
+ * Retrieve pinned playlists by user
+ * @param req
+ * @param res
+ */
+export const getPinnedPlaylists = async (req: Request, res: Response) => {
+  try {
+    const UserModel = getModel<IUser>('User');
+    const { username } = req.params;
+
+    // Validate input
+    if (!username) {
+      res.status(400).send('User not found');
+      return;
+    }
+
+    // Find user by username
+    const user = await UserModel.findOne({ username });
+
+    if (!user || !user.pinnedPlaylists || user.pinnedPlaylists.length === 0) {
+      res.status(404).send('No pinned playlists found');
+      return;
+    }
+
+    res.status(200).send({
+      message: 'Pinned playlists retrieved successfully',
+      pinnedPlaylists: user.pinnedPlaylists,
+    });
+  } catch (err) {
+    console.error('Error fetching pinned playlists:', err);
+    res.status(500).send('Error fetching pinned playlist');
   }
 };

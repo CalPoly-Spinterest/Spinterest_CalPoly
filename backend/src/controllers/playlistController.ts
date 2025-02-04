@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { getModel } from '../utils/connection';
 import { IPlaylist } from '../models/Playlist';
+import { IUser } from '../models/User';
 import { authenticateUser } from '../middleware/auth';
+//import mongoose from 'mongoose';
 
 /**
  * Retrieve all playlists
