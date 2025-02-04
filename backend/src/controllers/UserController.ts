@@ -173,23 +173,26 @@ export const viewProfile = async (req: Request, res: Response) => {
  */
 export const searchUsers = async (req: Request, res: Response) => {
   try {
-    console.log('Searching for username:', req.params.username); // Debug log
-    const UserModel = getModel<IUser>('User');
-    const user = await UserModel.findOne({
-      username: { $regex: req.params.username, $options: 'i' },
-    });
+    const searchTerm = req.params.username;
+    console.log('Searching for username:', searchTerm);
 
-    if (!user) {
-      console.log('No user found'); // Debug log
-      res.status(404).json({ message: 'User not found' });
+    if (!searchTerm || searchTerm.length === 0) {
+      res.status(200).json([]);
       return;
     }
 
-    console.log('Found user:', user); // Debug log
-    res.status(200).json(user);
+    const UserModel = getModel<IUser>('User');
+    const users = await UserModel.find({
+      username: { $regex: `^${searchTerm}`, $options: 'i' },
+    })
+      .limit(10) // Limit results to avoid overwhelming the frontend
+      .select('username'); // Only select needed fields
+
+    console.log('Found users:', users);
+    res.status(200).json(users);
   } catch (err) {
-    console.error('Error in getUserByUsername:', err);
-    res.status(500).json({ message: 'Error fetching user' });
+    console.error('Error in searchUsers:', err);
+    res.status(500).json({ message: 'Error searching users' });
   }
 };
 

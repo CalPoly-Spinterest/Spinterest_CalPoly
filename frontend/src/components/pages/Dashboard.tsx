@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import { Box, Typography, Input, InputAdornment, Paper } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Input,
+  InputAdornment,
+  Paper,
+  Avatar,
+} from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { Responsive as ResponsiveGridLayout } from 'react-grid-layout';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +26,7 @@ export const Dashboard = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     returnWidgets().then((widgets) => {
@@ -46,7 +54,7 @@ export const Dashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/user/${username}`
+        `http://localhost:8000/api/user/search/${username}`
       );
 
       if (response.status === 404) {
@@ -59,7 +67,8 @@ export const Dashboard = () => {
       }
 
       const user = await response.json();
-      setSearchResults([user]);
+      setSearchResults(user);
+      setShowDropdown(true); // Show dropdown when we have results
     } catch (err) {
       console.error('Search error:', err);
       setError('Error searching for user');
@@ -103,13 +112,13 @@ export const Dashboard = () => {
     }
   };
 
-  // Debounced search
+  // Update search on every keystroke
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (searchQuery.trim()) {
       handleSearch(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timer);
+    } else {
+      setSearchResults([]);
+    }
   }, [searchQuery]);
 
   const layouts = getLayouts(widgets);
@@ -119,7 +128,6 @@ export const Dashboard = () => {
       <Box sx={{ position: 'relative', marginBottom: '20px' }}>
         <Input
           placeholder="/genre, /tag, /person"
-          id="input-with-icon-adornment"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           endAdornment={
@@ -169,14 +177,27 @@ export const Dashboard = () => {
                       cursor: 'pointer',
                     },
                     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
                   }}
                 >
-                  <Typography variant="body1">{user.username}</Typography>
-                  {user.location && (
-                    <Typography variant="body2" color="textSecondary">
-                      {user.location}
-                    </Typography>
-                  )}
+                  <Avatar
+                    src={user.images?.[0]?.url || '/broken-image.jpg'}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      bgcolor: '#7C6BBB', // Same purple as your profile avatar
+                    }}
+                  />
+                  <Box>
+                    <Typography variant="body1">{user.username}</Typography>
+                    {user.location && (
+                      <Typography variant="body2" color="text.secondary">
+                        {user.location}
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               ))
             )}

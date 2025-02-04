@@ -56,8 +56,18 @@ export const Profile: FunctionComponent = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [myData, setMyData] = useState<User | null>(null);
 
+  const [currentUser] = useState<string>(
+    localStorage.getItem('username') || ''
+  );
+  const [profileUsername, setProfileUsername] = useState<string>('');
+
   const navigate = useNavigate();
-  const username = window.location.pathname.split('/').pop();
+
+  useEffect(() => {
+    const username = window.location.pathname.split('/').pop() || '';
+    setProfileUsername(username);
+    fetchProfile(); // Fetch profile when username changes
+  }, [window.location.pathname]); // Remove separate useEffect for fetchProfile
 
   const fetchProfile = async () => {
     if (!accessToken && !refreshToken) return;
@@ -67,6 +77,7 @@ export const Profile: FunctionComponent = () => {
 
     // the route should include a ${username} param to fetch the user's data
     try {
+      const username = window.location.pathname.split('/').pop();
       let response = await fetch(`http://localhost:8000/api/user/${username}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -75,9 +86,24 @@ export const Profile: FunctionComponent = () => {
       if (!response.ok) {
         throw new Error('Failed to get user data');
       }
+
+      const fullprofileResponse = await fetch(
+        `http://localhost:8000/api/user/profile/${username}`
+      );
+      if (!fullprofileResponse.ok) {
+        throw new Error('Failed to get full profile data');
+      }
+      const fullProfileData = await fullprofileResponse.json();
+
       const userData = await response.json();
       console.log('User Data:', userData);
-      setUserData(userData);
+
+      // NOTEE
+      //setUserData(userData); -- from main but got replaced by fullProfileData from fixsearch bar merge
+
+      console.log('Profile Response:', fullProfileData);
+      setUserData(fullProfileData);
+
       // spotifyId of the user you want to fetch (could be you, or someone else, doesn't matter just a parm to profile component)
       const userSpotifyId = userData.spotifyId;
 
@@ -158,6 +184,7 @@ export const Profile: FunctionComponent = () => {
     if (!accessToken && !refreshToken) return;
 
     try {
+      const username = window.location.pathname.split('/').pop();
       const updatedUserData = {
         isPrivate: !userData?.isPrivate,
       };
@@ -179,6 +206,8 @@ export const Profile: FunctionComponent = () => {
 
   const handleFollowToggle = async () => {
     if (!accessToken && !refreshToken) return;
+
+    const username = window.location.pathname.split('/').pop();
 
     if (following) {
       try {
@@ -221,7 +250,9 @@ export const Profile: FunctionComponent = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [accessToken, refreshToken, username]);
+    // NOTE
+    // took username out but i think we should add it back in
+  }, [accessToken, refreshToken]);
   return (
     <Box
       sx={{
@@ -314,7 +345,10 @@ export const Profile: FunctionComponent = () => {
             bgcolor: '#ECE6F0',
           }}
         >
-          <AboutComponent isOwnProfile={isOwnProfile} />
+          <AboutComponent
+            isOwnProfile={profileUsername === currentUser}
+            profileUsername={profileUsername}
+          />
         </Paper>
 
         <PinnedMusicComponent />
