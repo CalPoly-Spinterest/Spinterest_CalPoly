@@ -9,18 +9,17 @@ import dotenv from 'dotenv';
 import { ArtistSchema, IArtist } from '../models/Artist';
 
 let connection: mongoose.Connection | null = null;
-const env = dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '../../../.env.local' });
 
 export const getDbConnection = async (): Promise<mongoose.Connection> => {
   if (connection) {
     return connection;
   }
 
-  const MONGO_URI = `mongodb+srv://spinterest_admin:${env.parsed?.MONGO_DB_PASSWORD}@spinterestdb.tw3jz.mongodb.net/?retryWrites=true&w=majority&appName=SpinterestDB`;
-  if (!env.parsed?.MONGO_DB_PASSWORD) {
-    console.error('MONGO_DB_PASSWORD environment variable is not set');
-    process.exit(1);
+  if (process.env.MONGO_DB_PASSWORD === undefined) {
+    throw new Error('MONGO_DB_PASSWORD is not defined');
   }
+  const MONGO_URI = `mongodb+srv://spinterest_admin:${process.env.MONGO_DB_PASSWORD}@spinterestdb.tw3jz.mongodb.net/?retryWrites=true&w=majority&appName=SpinterestDB`;
   try {
     const conn = await mongoose.createConnection(MONGO_URI!, {}).asPromise();
 

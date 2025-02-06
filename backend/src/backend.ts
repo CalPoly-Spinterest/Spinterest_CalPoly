@@ -3,16 +3,15 @@ import cors from 'cors';
 import { getDbConnection } from './utils/connection';
 import routes from './routes/index.js';
 import dotenv from 'dotenv';
-import profileController from './routes/api/profileRoute';
 dotenv.config(); // Load .env variables
 
 // dotenv.config({ path: '../.env.local' });
 // console.log('Loaded TOKEN_SECRET:', process.env.TOKEN_SECRET);
 
-const result = dotenv.config({ path: '.env.local' });
+const result = dotenv.config({ path: '../.env.local' });
 
 if (result.error) {
-  console.error('Failed to load .env.local file:', result.error);
+  console.error('Failed to load .envfile:', result.error);
 } else {
   console.log('Environment variables loaded:', result.parsed);
 }
