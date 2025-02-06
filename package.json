@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "test:changed": "jest -o",
-    "test": "jest"
+    "test": "jest",
+    "install": "cd backend && npm install && cd ../frontend && npm install cd .."
   },
   "author": "",
   "license": "ISC",
@@ -41,7 +42,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write --config ./.prettierrc"
+      "prettier --write --config ./.prettierrc",
+      "eslint --fix"
     ]
   }
 }
