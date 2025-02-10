@@ -2,8 +2,8 @@ import { FunctionComponent, useState, useEffect } from 'react';
 import axios from 'axios';
 import { getRefreshedToken, logout } from '../data/SpotifyAuth';
 import { useNavigate } from 'react-router-dom';
-import { fetchPlaylists, WidgetData } from '../data/playlistUtils';
-import { followUser, unfollowUser } from '../data/followUtils';
+import React from 'react';
+import { followUser } from '../data/followUtils';
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import FriendsComponent from './ProfileComponents/FriendsComponent';
+//import FriendsComponent from './ProfileComponents/FriendsComponent';
 import AboutComponent from './ProfileComponents/AboutComponent';
 import PinnedMusicComponent from './ProfileComponents/PinnedMusicComponent';
 
@@ -50,8 +50,8 @@ export const Profile: FunctionComponent = () => {
   const accessToken = window.localStorage.getItem('spotify_token');
   const refreshToken = window.localStorage.getItem('spotify_refresh_token');
   const [profile, setProfile] = useState<SpotifyProfile | null>(null);
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [loadingFriends, setLoadingFriends] = useState(true);
+  //const [friends, setFriends] = useState<Friend[]>([]);
+  //const [loadingFriends, setLoadingFriends] = useState(true);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [following, setFollowing] = useState<boolean>(false);
   const [userData, setUserData] = useState<User | null>(null);
@@ -68,7 +68,7 @@ export const Profile: FunctionComponent = () => {
 
     // the route should include a ${username} param to fetch the user's data
     try {
-      let response = await fetch(`http://localhost:8000/api/user/${username}`, {
+      const response = await fetch(`http://localhost:8000/api/user/${username}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -151,7 +151,7 @@ export const Profile: FunctionComponent = () => {
       }
     } catch (error) {
       console.error('Error fetching profile', error);
-      setLoadingFriends(false);
+      //setLoadingFriends(false);
     }
   };
 
@@ -205,7 +205,7 @@ export const Profile: FunctionComponent = () => {
       try {
         // CALL followUser in followUtils.tsx
 
-        if (followUser(username) === true) {
+        if (username && (await followUser(username))) {
           console.log('followUser called');
         }
 
@@ -307,7 +307,7 @@ export const Profile: FunctionComponent = () => {
             </>
           )}
         </Paper>
-        <FriendsComponent friends={friends} loadingFriends={loadingFriends} />
+        {/* <FriendsComponent friends={None} loadingFriends={loadingFriends} /> */}
       </Box>
 
       {/* About, Favorites, and Pinned Music Column */}

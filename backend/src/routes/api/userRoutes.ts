@@ -11,6 +11,7 @@ import {
   removeFollower,
   getUserBySpotifyId,
   viewProfile,
+  getPrivate,
 } from '../../controllers/UserController';
 import {
   addFavorite,
@@ -19,7 +20,7 @@ import {
   updateFavorite,
 } from '../../controllers/favoritesController';
 import { getPlaylistsByUsername } from '../../controllers/playlistController';
-import { authenticateUser, registerUser } from '../../middleware/auth';
+import { registerUser } from '../../middleware/auth';
 
 const router = Router();
 
@@ -49,4 +50,6 @@ router.put('/:username/unfollow', removeFollower);
 //view user profile
 router.get('/profile/:username', viewProfile); // updated route
 
+// get user private attribute
+router.get('/private/:username', getPrivate);
 export default router;

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Typography,
@@ -18,7 +19,7 @@ import {
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { togglePinPlaylist, likePlaylist } from '../../data/playlistUtils';
+import { usePinnedPlaylists } from '../../data/pinnedPlaylistUtils';
 
 export const PlaylistWidget = ({
   playlistId,
@@ -37,66 +38,9 @@ export const PlaylistWidget = ({
   dragHandleClass: string;
   noDragClass: string;
 }) => {
-  const [clicked, setClicked] = useState(false);
+  const { clicked, handlePinClick } = usePinnedPlaylists(playlistId);
   const [isHovered, setIsHovered] = useState(false);
-  const [pinnedPlaylists, setPinnedPlaylists] = useState([]);
 
-  useEffect(() => {
-    const fetchPinnedPlaylist = async () => {
-      const username = localStorage.getItem('username');
-      if (!username) {
-        console.error('No username found');
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/profile/getPinnedPlaylists/${username}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem('jwttoken')}`,
-            },
-          }
-        );
-        const data = await response.json();
-        const pinnedPlaylists = data.pinnedPlaylists;
-        setPinnedPlaylists(pinnedPlaylists);
-        setClicked(pinnedPlaylists.includes(playlistId));
-      } catch (error) {
-        console.error('Error fetching pinned playlist.', error);
-      }
-    };
-    fetchPinnedPlaylist();
-  }, [playlistId]);
-
-  const handlePinClick = async () => {
-    const username = localStorage.getItem('username');
-    if (!username) {
-      console.error('No username found');
-      return;
-    }
-
-    if (!playlistId) {
-      console.error('Playlist ID is undefined');
-      return;
-    }
-    try {
-      const updatedPlaylist = await togglePinPlaylist(username, playlistId);
-      setClicked((prev) => !prev);
-      console.log((updatedPlaylist as { message: string }).message);
-    } catch (e) {
-      console.log((e as Error).message);
-    }
-  };
-
-  const handleLikeClick = async (playlistId: string) => {
-    try {
-      const response = await likePlaylist(playlistId);
-      console.log(response);
-    } catch (e) {
-      console.log((e as Error).message);
-    }
-  };
   return (
     <Card
       sx={{
@@ -240,7 +184,6 @@ export const PlaylistWidget = ({
             {clicked ? <PushPin /> : <PushPinOutlined />}
           </IconButton>
           <FavoriteBorderOutlined
-            // onClick={() => handleLikeClick(playlistId)}
             sx={{
               transition: 'transform 0.3s, box-shadow 0.3s',
               '&:hover': {

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { PlaylistWidget } from '../pages/DashboardComponents/PlaylistWidget';
-import { getAccessToken } from './SpotifyAuth';
+// import { getAccessToken } from './SpotifyAuth';
 
 export interface Widget {
   id: string;
@@ -17,7 +17,6 @@ export interface WidgetData {
   cover: string;
   owner: Owner;
   title: string;
-  isPinned?: boolean;
 }
 
 export interface Owner {
@@ -84,86 +83,6 @@ export const fetchPlaylists = async (
     return widgetsData;
   } catch (error) {
     console.error('Error fetching playlists:', error);
-    return [];
-  }
-};
-
-export const likePlaylist = async (playlistId: string) => {
-  console.log('in likePlaylist');
-  try {
-    const token = localStorage.getItem('jwttoken');
-    if (!token) {
-      throw new Error('JWT token is missing');
-    }
-
-    const response = await axios.put(
-      `http://localhost:8000/api/playlist/${playlistId}/like`,
-      {
-        params: {
-          playlistId: playlistId,
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Error liking playlist:', error);
-    throw error;
-  }
-};
-
-// Pinning playlist
-export const togglePinPlaylist = async (
-  username: string,
-  playlistId: string
-) => {
-  try {
-    const token = localStorage.getItem('jwttoken');
-    if (!token) {
-      throw new Error('JWT token is missing');
-    }
-
-    const response = await axios.put(
-      `http://localhost:8000/api/profile/pinPlaylist/${username}/${playlistId}`,
-      {},
-      {
-        headers: { authorization: token },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Error toggling pinned playlist:', error);
-    throw error;
-  }
-};
-
-export const fetchPinPlaylist = async (
-  username: string
-): Promise<WidgetData[]> => {
-  try {
-    // Fetch pinned playlists from your backend
-    const response = await axios.get<PlaylistResponse>(
-      `http://localhost:8000/profile/getPinnedPlaylists`,
-      { params: { user: username } }
-    );
-
-    const data = response.data;
-    console.log('Pinned Playlists:', data);
-
-    // Fetch cover image for each playlist from Spotify API
-    const pinnedPlaylists: WidgetData[] = data.items
-      .filter((playlist: PlaylistData) => playlist)
-      .map((playlist: PlaylistData) => ({
-        id: playlist.id,
-        cover: playlist.images[0]?.url || '',
-        owner: playlist.owner,
-        title: playlist.name,
-      }));
-
-    return pinnedPlaylists;
-  } catch (error) {
-    console.error('Error fetching pinned playlists from user:', error);
     return [];
   }
 };
@@ -249,22 +168,22 @@ export const buildWidgets = async (
 
       const allGenres = genres.concat(localArtistsGenres);
 
-      try {
-        const localSaveResponse = await axios.post(
-          'http://localhost:8000/api/artist/bulkWrite',
-          {
-            artists: spotifyArtistInfo.flatMap((response: any) =>
-              response.artists.map((artist: any) => ({
-                id: artist.id,
-                name: artist.name,
-                genres: artist.genres,
-              }))
-            ),
-          }
-        );
-      } catch (error) {
-        console.error('Error saving artists:', error);
-      }
+      // try {
+      //   const localSaveResponse = await axios.post(
+      //     'http://localhost:8000/api/artist/bulkWrite',
+      //     {
+      //       artists: spotifyArtistInfo.flatMap((response: any) =>
+      //         response.artists.map((artist: any) => ({
+      //           id: artist.id,
+      //           name: artist.name,
+      //           genres: artist.genres,
+      //         }))
+      //       ),
+      //     }
+      //   );
+      // } catch (error) {
+      //   console.error('Error saving artists:', error);
+      //}
 
       const topGenres = await getTopGenres(allGenres);
       // console.log('topGenres', topGenres);

@@ -1,9 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Search as SearchIcon,
-  Settings as SettingsIcon,
   Edit as EditIcon,
   LocationOn as LocationOnIcon,
   AccountCircle as AccountCircleIcon,
@@ -145,6 +143,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({ isOwnProfile }) => {
               id="location"
               label="Location"
               value={location}
+              maxRows={1}
               onChange={(e) => setLocation(e.target.value)}
               InputProps={{
                 readOnly: !isEditable,
@@ -162,6 +161,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({ isOwnProfile }) => {
               id="spotify"
               label="Spotify"
               value={links}
+              maxRows={1}
               onChange={(e) => setLinks(e.target.value)}
               InputProps={{
                 readOnly: !isEditable,

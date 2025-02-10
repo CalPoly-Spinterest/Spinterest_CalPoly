@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "test:changed": "jest -o",
-    "test": "jest"
+    "test": "jest",
+    "install": "cd backend && npm install && cd ../frontend && npm install cd .."
   },
   "author": "",
   "license": "ISC",
@@ -28,8 +29,10 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@typescript-eslint/parser": "^8.23.0",
     "concurrently": "^9.0.1",
-    "eslint": "^9.14.0",
+    "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.12.0",
     "husky": "^7.0.2",
@@ -41,7 +44,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write --config ./.prettierrc"
+      "prettier --write --config ./.prettierrc",
+      "eslint --fix"
     ]
   }
 }

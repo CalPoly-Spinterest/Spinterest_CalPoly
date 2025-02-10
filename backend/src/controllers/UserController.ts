@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { getModel } from '../utils/connection';
 import { IUser } from '../models/User';
-import { INotification } from '../models/Notification';
-import { getFriends } from '../controllers/spotifyController';
 
 /**
  * Retrieve a user by their username
@@ -344,5 +342,26 @@ export const removeFollower = async (req: Request, res: Response) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Error removing follower');
+  }
+};
+export const getPrivate = async (req: Request, res: Response) => {
+  // if public return 200, if private return 404
+  try {
+    const UserModel = getModel<IUser>('User');
+    const user = await UserModel.findOne({ username: req.params.username });
+    if (!user) {
+      res.status(404).send('User not found');
+      return;
+    }
+    if (user.isPrivate === true) {
+      res.status(403).send('User profile is private');
+      return;
+    }
+    res.status(200).send('User profile is public');
+    return;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching user');
+    return;
   }
 };

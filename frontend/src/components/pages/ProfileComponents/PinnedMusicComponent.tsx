@@ -1,10 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Box, TextField, Typography, Paper, Grid } from '@mui/material';
-import {
-  WidgetData,
-  //fetchSpotifyPlaylistCover,
-} from '../../data/playlistUtils';
+import { Box, Typography, Paper, Grid } from '@mui/material';
+import { WidgetData } from '../../data/playlistUtils';
 
 const PinnedMusicComponent: React.FC = () => {
   const [pinnedPlaylists, setPinnedPlaylists] = useState<WidgetData[]>([]);
@@ -46,7 +43,8 @@ const PinnedMusicComponent: React.FC = () => {
           .then((res) => res.json())
           .then((playlistData) => ({
             id: playlistId,
-            cover: playlistData.images[0]?.url || 'path/to/default-image.jpg', // Default image if no cover is found
+            title: playlistData.title,
+            cover: playlistData.images[0]?.url,
           }))
       );
 
@@ -62,23 +60,9 @@ const PinnedMusicComponent: React.FC = () => {
       <Typography variant="h5" sx={{ mb: 2 }}>
         PINNED MUSIC
       </Typography>
-      <TextField
-        fullWidth
-        placeholder="Pinned Music"
-        variant="outlined"
-        sx={{
-          mb: 2,
-          '& .MuiOutlinedInput-root': {
-            bgcolor: '#F5EFF7',
-            '&:hover fieldset': {
-              borderColor: '#000000',
-            },
-          },
-        }}
-      />
       <Grid container spacing={2}>
         {pinnedPlaylists.length > 0 ? (
-          pinnedPlaylists.map((playlist, i) => (
+          pinnedPlaylists.map((playlist) => (
             <Grid item xs={4} key={playlist.id}>
               <Box
                 sx={{
