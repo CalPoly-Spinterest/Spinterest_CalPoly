@@ -29,7 +29,7 @@ export const Login = () => {
       navigate('/dashboard');
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const getInfoFromUrl = () => {
     const code = new URLSearchParams(window.location.search).get('code');

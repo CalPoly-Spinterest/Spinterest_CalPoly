@@ -53,7 +53,7 @@
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write --config ./.prettierrc",
       "eslint --fix",
-      "npm run test"
+      "jest --bail --findRelatedTests --passWithNoTests"
     ]
   }
 }

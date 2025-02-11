@@ -223,7 +223,7 @@ export const Profile: FunctionComponent = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [accessToken, refreshToken, username]);
+  }, [accessToken, refreshToken, username, fetchProfile]);
   return (
     <Box
       sx={{
