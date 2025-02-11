@@ -26,6 +26,8 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
   }
 }
