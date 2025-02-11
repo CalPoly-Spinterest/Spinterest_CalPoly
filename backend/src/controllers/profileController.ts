@@ -186,7 +186,7 @@ export const pinPlaylist = async (req: Request, res: Response) => {
 
     // Check if playlist is already pinned
     const playlistIndex = user.pinnedPlaylists.findIndex(
-      (id) => id != null && id.toString() === playlistId.toString()
+      (id: string) => id != null && id.toString() === playlistId.toString()
     );
 
     if (playlistIndex >= 0) {

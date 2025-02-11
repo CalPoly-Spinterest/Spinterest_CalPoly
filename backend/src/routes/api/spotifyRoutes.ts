@@ -1,19 +1,17 @@
 import { Router } from 'express';
 
 import {
-  getPlaylists,
   getFriends,
   getPlaylistTracks,
   getUserPlaylists,
   getUserPlaylistTracks,
   getArtistInfo,
-  getPlaylist,
   getMyPlaylists,
   getMultipleArtistInfo,
 } from '../../controllers/spotifyController';
 import { authenticateUser } from '../../middleware/auth';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/playlists', authenticateUser, getMyPlaylists);
 router.get('/friends', getFriends);

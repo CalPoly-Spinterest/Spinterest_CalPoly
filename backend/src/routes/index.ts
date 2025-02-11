@@ -6,7 +6,7 @@ import loginRoutes from './api/loginRoutes';
 import profileRoutes from './api/profileRoute';
 import artistRoutes from './api/artistRoutes';
 
-const router = Router();
+const router: Router = Router();
 
 // Protected routes
 router.use('/user', userRoutes);

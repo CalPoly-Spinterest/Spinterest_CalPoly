@@ -7,7 +7,7 @@ import {
   saveArtistsBulk,
 } from '../../controllers/artistController';
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/', (req, res) => {
   saveArtist(req, res);

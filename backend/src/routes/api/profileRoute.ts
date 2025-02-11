@@ -6,7 +6,7 @@ import {
   updateProfilePgInfo,
 } from '../../controllers/profileController';
 
-const profileController = Router();
+const profileController: Router = Router();
 
 profileController.post('/logProfileInput', updateProfilePgInfo);
 profileController.get('/logProfileInput', getProfilePgInfo);
