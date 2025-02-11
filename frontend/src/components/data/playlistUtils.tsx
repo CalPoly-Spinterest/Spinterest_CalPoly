@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { PlaylistWidget } from '../pages/DashboardComponents/PlaylistWidget';
-import { getAccessToken } from './SpotifyAuth';
 
 export interface Widget {
   id: string;
@@ -32,7 +31,7 @@ export interface PlaylistData {
 }
 
 interface Playlist {
-  items: any[];
+  items: unknown[];
 }
 
 interface Image {
@@ -51,6 +50,12 @@ interface Artist {
 
 interface ArtistResponse {
   artists: Artist[];
+}
+
+interface PlaylistTrack {
+  track: {
+    artists: Artist[];
+  };
 }
 
 export const fetchPlaylists = async (
@@ -115,11 +120,11 @@ export const buildWidgets = async (
       );
 
       //console.log('Playlist in playlistUtils:', response.data);
-      const tracks = response.data.items;
+      const tracks = response.data.items as PlaylistTrack[];
       // console.log('Tracks:', tracks);
 
-      const artists: string[] = tracks.flatMap((track: any) =>
-        track.track.artists.map((artist: any) => artist.id)
+      const artists: string[] = tracks.flatMap((track: PlaylistTrack) =>
+        track.track.artists.map((artist: Artist) => artist.id)
       );
 
       // for each artist, find if they're in our db
@@ -159,28 +164,25 @@ export const buildWidgets = async (
         );
       }
 
-      const genres = spotifyArtistInfo.flatMap((artistInfo: any) =>
-        artistInfo.artists.flatMap((artist: any) => artist.genres)
+      const genres = spotifyArtistInfo.flatMap((artistInfo: ArtistResponse) =>
+        artistInfo.artists.flatMap((artist: Artist) => artist.genres)
       );
-      const localArtistsGenres = localArtists?.flatMap((artist: any) => {
+      const localArtistsGenres = localArtists?.flatMap((artist: Artist) => {
         return artist.genres;
       });
 
       const allGenres = genres.concat(localArtistsGenres);
 
       try {
-        const localSaveResponse = await axios.post(
-          'http://localhost:8000/api/artist/bulkWrite',
-          {
-            artists: spotifyArtistInfo.flatMap((response: any) =>
-              response.artists.map((artist: any) => ({
-                id: artist.id,
-                name: artist.name,
-                genres: artist.genres,
-              }))
-            ),
-          }
-        );
+        await axios.post('http://localhost:8000/api/artist/bulkWrite', {
+          artists: spotifyArtistInfo.flatMap((response: ArtistResponse) =>
+            response.artists.map((artist: Artist) => ({
+              id: artist.id,
+              name: artist.name,
+              genres: artist.genres,
+            }))
+          ),
+        });
       } catch (error) {
         console.error('Error saving artists:', error);
       }

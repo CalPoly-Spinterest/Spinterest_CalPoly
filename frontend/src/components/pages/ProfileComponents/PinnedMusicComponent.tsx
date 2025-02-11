@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Box, TextField, Typography, Paper, Grid } from '@mui/material';
+import { Box, Typography, Paper, Grid } from '@mui/material';
 import { WidgetData } from '../../data/playlistUtils';
 
 const PinnedMusicComponent: React.FC = () => {
@@ -62,7 +62,7 @@ const PinnedMusicComponent: React.FC = () => {
       </Typography>
       <Grid container spacing={2}>
         {pinnedPlaylists.length > 0 ? (
-          pinnedPlaylists.map((playlist, i) => (
+          pinnedPlaylists.map((playlist) => (
             <Grid item xs={4} key={playlist.id}>
               <Box
                 sx={{

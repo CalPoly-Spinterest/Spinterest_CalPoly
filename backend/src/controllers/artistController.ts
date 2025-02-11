@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import axios from 'axios';
+import { Request, Response } from 'express';
 import { getModel } from '../utils/connection';
 import { IArtist } from '../models/Artist';
 
@@ -29,12 +28,15 @@ export const saveArtist = async (req: Request, res: Response) => {
 export const saveArtistsBulk = async (req: Request, res: Response) => {
   const ArtistModel = getModel<IArtist>('Artist');
   try {
-    const artists = req.body.artists.reduce((acc: any[], artist: any) => {
-      if (!acc.find((a) => a.id === artist.id)) {
-        acc.push(artist);
-      }
-      return acc;
-    }, []);
+    const artists = req.body.artists.reduce(
+      (acc: IArtist[], artist: IArtist) => {
+        if (!acc.find((a) => a.id === artist.id)) {
+          acc.push(artist);
+        }
+        return acc;
+      },
+      []
+    );
 
     for (const artist of artists) {
       const existingArtist = await ArtistModel.findOne({ id: artist.id });
@@ -84,8 +86,8 @@ export const getArtists = async (req: Request, res: Response) => {
 
 export const getSavedStatus = async (req: Request, res: Response) => {
   try {
-    let unsaved: string[] = [];
-    let saved: string[] = [];
+    const unsaved: string[] = [];
+    const saved: string[] = [];
     const ArtistModel = getModel<IArtist>('Artist');
     for (const id of req.body.ids) {
       const existingArtist = await ArtistModel.findOne({ id: id });

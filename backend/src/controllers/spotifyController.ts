@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import axios from 'axios';
 
 export interface Playlist {
@@ -73,8 +73,7 @@ export const getPlaylists = async (req: Request, res: Response) => {
 
 export const getPlaylistTracks = async (
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ): Promise<void> => {
   try {
     // Extract spotifyToken from the Authorization header
@@ -163,11 +162,7 @@ export const getUserPlaylistTracks = async (req: Request, res: Response) => {
   }
 };
 
-export const getArtistInfo = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getArtistInfo = async (req: Request, res: Response) => {
   try {
     const spotifyToken = req.headers.authorization?.split(' ')[1]; // Splits "Bearer token"
     const artistId = req.params.artistId;
@@ -187,11 +182,7 @@ export const getArtistInfo = async (
   }
 };
 
-export const getMultipleArtistInfo = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getMultipleArtistInfo = async (req: Request, res: Response) => {
   try {
     const spotifyToken = req.headers.authorization?.split(' ')[1]; // Splits "Bearer token"
     const artistIds = (req.query.ids as string)?.split(',');

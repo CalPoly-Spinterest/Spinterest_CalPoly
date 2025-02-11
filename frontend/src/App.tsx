@@ -9,13 +9,11 @@ import { Navbar } from './components/common/Navbar';
 import { Theme } from './components/common/Theme';
 
 import '@fontsource/roboto';
-import PrivateRoute from './components/common/PrivateRoute';
 import { grey } from '@mui/material/colors';
 import '@fontsource/open-sans';
 
 export default function App() {
   const [expanded, setExpanded] = React.useState(false);
-  let signedIn = localStorage.getItem('spotify_token');
 
   return (
     <Theme>

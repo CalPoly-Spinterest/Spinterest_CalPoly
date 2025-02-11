@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {
-  AUTH_URL,
-  fetchAuthToken,
-  SpotifyLoginButton,
-} from '../data/SpotifyAuth';
+import { AUTH_URL, fetchAuthToken } from '../data/SpotifyAuth';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, TextField, Link } from '@mui/material';
+import { Box, Button, Typography, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import logo from '../../assets/logo.png';
 import { SignupModal } from '../common/SignupModal';
 
 import '@fontsource/open-sans';
-import { PlaylistResponse } from '../data/playlistUtils';
 
 export const Login = () => {
   const [open, setOpen] = useState(false);
@@ -21,52 +15,6 @@ export const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  interface PlaylistDoc {
-    title: string;
-    cover: string;
-    spotifyId: string;
-    songs: string;
-    creator: string;
-  }
-
-  const loadPlaylists = async () => {
-    const spotifyToken = localStorage.getItem('spotify_token');
-    if (!spotifyToken) {
-      console.error('No Spotify token found');
-      return;
-    }
-    const playlists = await axios.get<PlaylistResponse>(
-      'http://localhost:8000/api/spotify/playlists',
-      {
-        params: {
-          spotifyToken: spotifyToken,
-        },
-        headers: {
-          authorization: localStorage.getItem('jwttoken'),
-        },
-      }
-    );
-
-    const dataMap: PlaylistDoc[] = playlists.data.items
-      .filter((playlist) => playlist !== null)
-      .map((playlist) => ({
-        title: playlist.name,
-        cover: playlist.images[0].url,
-        spotifyId: playlist.id,
-        songs: playlist.tracks.href,
-        creator: localStorage.getItem('username') || '',
-      }));
-
-    dataMap.forEach((playlist) => {
-      axios.post('http://localhost:8000/api/playlist', {
-        title: playlist.title,
-        cover: playlist.cover,
-        spotifyId: playlist.spotifyId,
-        songs: playlist.songs,
-        creator: playlist.creator,
-      });
-    });
-  };
   useEffect(() => {
     const fetchData = async () => {
       const { code } = getInfoFromUrl();
@@ -148,7 +96,7 @@ export const Login = () => {
           </Typography>
 
           <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-            Let's get back to those tunes.
+            Let&apos;s get back to those tunes.
           </Typography>
 
           <Box
@@ -251,7 +199,7 @@ export const Login = () => {
                 color="text.secondary"
                 display="inline"
               >
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
               </Typography>
               <Typography
                 variant="body2"

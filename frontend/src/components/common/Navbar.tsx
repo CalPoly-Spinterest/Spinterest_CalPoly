@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import ListItem from '@mui/material/ListItem';
@@ -6,7 +6,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { FunctionComponent } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import {
@@ -26,11 +26,8 @@ interface ItemProps {
   icon: React.ReactNode;
 }
 export const Navbar: FunctionComponent<NavbarProps> = (props) => {
-  const location = useLocation();
-  const [spotifyId, setSpotifyId] = useState<string | null>(null);
-  //const [username, setUsername] = useState<string>("");
-  let signedIn = localStorage.getItem('spotify_token');
-  let username = localStorage.getItem('username');
+  const signedIn = localStorage.getItem('spotify_token');
+  const username = localStorage.getItem('username');
 
   // useEffect(() => {
   //   const fetchSpotId = async () => {

@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { getModel } from '../utils/connection';
 import { IPlaylist } from '../models/Playlist';
-import { IUser } from '../models/User';
-import { authenticateUser } from '../middleware/auth';
 //import mongoose from 'mongoose';
 
 /**
@@ -33,9 +31,9 @@ export const getAllPlaylists = async (req: Request, res: Response) => {
 export const addPlaylist = async (req: Request, res: Response) => {
   const PlaylistModel = getModel<IPlaylist>('Playlist');
   try {
-    const newPlaylist = await PlaylistModel.create(req.body);
+    await PlaylistModel.create(req.body);
     res.status(201).send('Playlist created');
-  } catch (error) {
+  } catch {
     res.status(500).send('Error adding playlist');
   }
 };

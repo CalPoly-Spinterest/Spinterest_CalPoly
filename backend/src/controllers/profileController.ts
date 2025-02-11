@@ -37,6 +37,7 @@ export const updateProfilePgInfo = async (req: Request, res: Response) => {
         if (key === 'biography') {
           user.bio = profileData[key]; //ensuring bio is saved
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (user as any)[key] = profileData[key];
         }
       }

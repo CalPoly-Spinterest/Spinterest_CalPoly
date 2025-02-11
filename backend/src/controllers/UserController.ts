@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { getModel } from '../utils/connection';
 import { IUser } from '../models/User';
-import { getFriends } from '../controllers/spotifyController';
 
 /**
  * Retrieve a user by their username

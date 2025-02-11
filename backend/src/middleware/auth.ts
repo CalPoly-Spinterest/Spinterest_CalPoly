@@ -2,10 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { getModel } from '../utils/connection';
-import { IUser, UserSchema } from '../models/User';
-import { model } from 'mongoose';
-import mongoose from 'mongoose';
-
+import { IUser } from '../models/User';
 //const User = mongoose.model<IUser & mongoose.Document>('User', UserSchema);
 
 export async function registerUser(req: Request, res: Response): Promise<void> {

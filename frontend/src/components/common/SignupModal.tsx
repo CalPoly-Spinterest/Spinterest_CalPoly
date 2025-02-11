@@ -6,9 +6,7 @@ import {
   Box,
   Typography,
   Paper,
-  Divider,
 } from '@mui/material';
-import { AUTH_URL, SpotifyLoginButton } from '../data/SpotifyAuth';
 import { useNavigate } from 'react-router-dom';
 
 interface SignupModalProps {
@@ -17,16 +15,12 @@ interface SignupModalProps {
   navigate: ReturnType<typeof useNavigate>;
 }
 
-export const SignupModal = ({ open, setOpen, navigate }: SignupModalProps) => {
+export const SignupModal = ({ open, setOpen }: SignupModalProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [verifyPassword, setVerifyPassword] = useState('');
-  const [connectedToSpotify, setConnectedToSpotify] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const accessToken = window.localStorage.getItem('spotify_token');
-  const refreshToken = window.localStorage.getItem('spotify_refresh_token');
 
   const handleSignupClick = async () => {
     try {
@@ -86,16 +80,6 @@ export const SignupModal = ({ open, setOpen, navigate }: SignupModalProps) => {
     } catch (error) {
       console.error('Error saving Spotify ID:', error);
     }
-  };
-
-  const isFormValid = () => {
-    return (
-      username !== '' &&
-      password !== '' &&
-      verifyPassword !== '' &&
-      password === verifyPassword &&
-      connectedToSpotify
-    );
   };
 
   return (
