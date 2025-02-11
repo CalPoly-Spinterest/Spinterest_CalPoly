@@ -19,6 +19,14 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Husky
+        run: npm run postinstall
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
