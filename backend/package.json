@@ -25,6 +25,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/bcrypt": "^5.0.0",
-    "@types/cors": "^2.8.12"
+    "@types/cors": "^2.8.12",
+    "@types/axios": "^0.14.0"
   }
 }
