@@ -6,5 +6,12 @@
     "moduleResolution": "node",
     "strict": true
   },
-  "references": [{ "path": "./frontend" }, { "path": "./backend" }]
+  "references": [{ "path": "./frontend" }, { "path": "./backend" }],
+  "exclude": [
+    "**/*.json",
+    "node_modules",
+    "package.json",
+    "tsconfig.json",
+    "jest.config.js"
+  ]
 }
