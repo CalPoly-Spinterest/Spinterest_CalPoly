@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, {
+  FunctionComponent,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import axios from 'axios';
 import { getRefreshedToken, logout } from '../data/SpotifyAuth';
 import { useNavigate } from 'react-router-dom';
@@ -58,13 +63,9 @@ export const Profile: FunctionComponent = () => {
   const navigate = useNavigate();
   const username = window.location.pathname.split('/').pop();
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (!accessToken && !refreshToken) return;
 
-    // the purpose of this ugly looking code is to check if you are trying to view YOUR profile or someone elses,
-    // you shouldn't be able to EDIT someone elses account which is why we need to check
-
-    // the route should include a ${username} param to fetch the user's data
     try {
       const response = await fetch(
         `http://localhost:8000/api/user/${username}`,
@@ -80,10 +81,8 @@ export const Profile: FunctionComponent = () => {
       const userData = await response.json();
       console.log('User Data:', userData);
       setUserData(userData);
-      // spotifyId of the user you want to fetch (could be you, or someone else, doesn't matter just a parm to profile component)
       const userSpotifyId = userData.spotifyId;
 
-      // fetch YOUR spotify ID directly from the Spotify API
       let selfSpotifyDataResponse = await fetch(
         `https://api.spotify.com/v1/me`,
         {
@@ -120,9 +119,7 @@ export const Profile: FunctionComponent = () => {
       const myMongoId = myProfileData._id;
       console.log('My Profile Data:', myProfileData);
 
-      // Check if the profile's Spotify ID matches the user's Spotify ID
       if (selfProfileSpotifyId === userSpotifyId) {
-        // IF THIS IS YOUR PROFILE YOU ARE VIEWING, LOAD YOUR PROFILE DATA
         setIsOwnProfile(true);
         console.log('Profile Data Fetched:', selfProfileData);
         setProfile({
@@ -130,10 +127,8 @@ export const Profile: FunctionComponent = () => {
           images: selfProfileData.images || [],
         });
       } else {
-        // IF IT IS NOT YOUR PROFILE, LOAD THE PROFILE DATA OF THE USER YOU ARE VIEWING
         setIsOwnProfile(false);
         const otherspotifyDataResponse = await fetch(
-          // returns spotify user data from SPOTIFY API, this contains the display name and profile picture
           `https://api.spotify.com/v1/users/${userSpotifyId}`,
           {
             headers: {
@@ -154,7 +149,7 @@ export const Profile: FunctionComponent = () => {
       console.error('Error fetching profile', error);
       setLoadingFriends(false);
     }
-  };
+  }, [accessToken, refreshToken, username, localStorageUsername]);
 
   const toggleProfileVisibility = async () => {
     if (!accessToken && !refreshToken) return;
@@ -223,7 +218,8 @@ export const Profile: FunctionComponent = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [accessToken, refreshToken, username, fetchProfile]);
+  }, [fetchProfile]);
+
   return (
     <Box
       sx={{

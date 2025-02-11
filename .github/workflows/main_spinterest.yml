@@ -26,11 +26,11 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install --workspaces=false
-          npm run -w packages/backend build --if-present
-          npm run -w packages/backend test --if-present
+          npm run -w backend build --if-present
+          npm run -w backend test --if-present
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./packages/backend/* -r -x **/test/** **/node_modules/**
+        run: zip release.zip ./backend/* -r -x **/test/** **/node_modules/**
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
