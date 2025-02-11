@@ -7,8 +7,8 @@
     "build": "tsc",
     "dev": "NODE_OPTIONS='--loader ts-node/esm --experimental-specifier-resolution=node' nodemon",
     "start": "node dist/backend.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --roots src/tests",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --roots src/tests --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "postinstall": "husky install"
   },
   "author": "",
