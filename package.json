@@ -54,6 +54,9 @@
       "prettier --write --config ./.prettierrc",
       "eslint --fix",
       "jest --bail --findRelatedTests --passWithNoTests"
+    ],
+    "*.ts?(x)": [
+      "tsc --noEmit"
     ]
   }
 }
