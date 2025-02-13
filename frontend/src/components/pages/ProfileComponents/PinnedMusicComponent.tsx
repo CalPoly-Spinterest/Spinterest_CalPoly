@@ -24,7 +24,7 @@ const PinnedMusicComponent: React.FC = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8000/api/profile/getPinnedPlaylists/${username}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/profile/getPinnedPlaylists/${username}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem('jwttoken')}`,

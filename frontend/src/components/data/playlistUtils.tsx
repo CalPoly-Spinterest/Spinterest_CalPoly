@@ -63,7 +63,7 @@ export const fetchPlaylists = async (
 ): Promise<WidgetData[]> => {
   try {
     const response = await axios.get<PlaylistResponse>(
-      'http://localhost:8000/api/spotify/playlists',
+      `${process.env.REACT_APP_API_BASE_URL}/api/spotify/playlists`,
       {
         params: {
           spotifyToken: accessToken,
@@ -111,7 +111,7 @@ export const buildWidgets = async (
   const widgets: Widget[] = await Promise.all(
     playlists.map(async (playlist: WidgetData) => {
       const response = await axios.get<Playlist>(
-        `http://localhost:8000/api/spotify/playlists/${playlist.id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/spotify/playlists/${playlist.id}`,
         {
           headers: {
             authorization: `${localStorage.getItem('spotify_token')}`,
@@ -131,10 +131,12 @@ export const buildWidgets = async (
       const artistsQueryResponse = await axios.post<{
         unsaved: string[];
         saved: string[];
-      }>('http://localhost:8000/api/artist/status', { ids: artists });
+      }>(`${process.env.REACT_APP_API_BASE_URL}/api/artist/status`, {
+        ids: artists,
+      });
       const { saved, unsaved } = artistsQueryResponse.data;
       const localArtistResponse = await axios.post<Artist[]>(
-        'http://localhost:8000/api/artist/bulkGet',
+        `${process.env.REACT_APP_API_BASE_URL}/api/artist/bulkGet`,
         {
           ids: saved,
         }
@@ -150,7 +152,7 @@ export const buildWidgets = async (
           Array.from({ length: Math.ceil(unsaved.length / 50) }, (_, i) => {
             const batch = unsaved.slice(i * 50, (i + 1) * 50).join(',');
             return axios.get<ArtistResponse>(
-              `http://localhost:8000/api/spotify/artists?ids=${batch}`,
+              `${process.env.REACT_APP_API_BASE_URL}/api/spotify/artists?ids=${batch}`,
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
@@ -174,15 +176,18 @@ export const buildWidgets = async (
       const allGenres = genres.concat(localArtistsGenres);
 
       try {
-        await axios.post('http://localhost:8000/api/artist/bulkWrite', {
-          artists: spotifyArtistInfo.flatMap((response: ArtistResponse) =>
-            response.artists.map((artist: Artist) => ({
-              id: artist.id,
-              name: artist.name,
-              genres: artist.genres,
-            }))
-          ),
-        });
+        await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/api/artist/bulkWrite`,
+          {
+            artists: spotifyArtistInfo.flatMap((response: ArtistResponse) =>
+              response.artists.map((artist: Artist) => ({
+                id: artist.id,
+                name: artist.name,
+                genres: artist.genres,
+              }))
+            ),
+          }
+        );
       } catch (error) {
         console.error('Error saving artists:', error);
       }

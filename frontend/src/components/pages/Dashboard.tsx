@@ -47,7 +47,7 @@ export const Dashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/user/${username}`
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/${username}`
       );
 
       if (response.status === 404) {
@@ -76,7 +76,7 @@ export const Dashboard = () => {
       navigate(`/profile/${username}`);
 
       const profileResponse = await fetch(
-        `http://localhost:8000/api/user/profile/${username}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/profile/${username}`,
         {
           method: 'GET',
           credentials: 'omit',

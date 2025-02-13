@@ -53,7 +53,7 @@ const AboutComponent: React.FC<AboutComponentProps> = ({ isOwnProfile }) => {
       }
 
       const responseAbtFav = await axios.get<AbtFavResponse>(
-        'http://localhost:8000/api/profile/logProfileInput',
+        `${process.env.REACT_APP_API_BASE_URL}/api/profile/logProfileInput`,
         { params: { username } }
       );
 
@@ -113,10 +113,13 @@ const AboutComponent: React.FC<AboutComponentProps> = ({ isOwnProfile }) => {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/profile/logProfileInput', {
-        ...updatedData,
-        username,
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/profile/logProfileInput`,
+        {
+          ...updatedData,
+          username,
+        }
+      );
     } catch (error) {
       console.error('Error: About and Favorite not saved', error);
     }

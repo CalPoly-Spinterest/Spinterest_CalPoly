@@ -68,7 +68,7 @@ export const Profile: FunctionComponent = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/user/${username}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/${username}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ export const Profile: FunctionComponent = () => {
       const selfProfileSpotifyId = selfProfileData.id;
 
       const selfDataResponse = await fetch(
-        `http://localhost:8000/api/user/spotify/${selfProfileSpotifyId}?username=${localStorageUsername}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/spotify/${selfProfileSpotifyId}?username=${localStorageUsername}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ export const Profile: FunctionComponent = () => {
       };
 
       const response = await axios.put(
-        `http://localhost:8000/api/user/${username}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/${username}`,
         updatedUserData
       );
 
@@ -180,7 +180,7 @@ export const Profile: FunctionComponent = () => {
     if (following) {
       try {
         const response = await axios.put(
-          `http://localhost:8000/api/user/${username}/unfollow`,
+          `${process.env.REACT_APP_API_BASE_URL}/api/user/${username}/unfollow`,
           {
             headers: {
               authorization: localStorage.getItem('jwttoken'),
@@ -198,7 +198,7 @@ export const Profile: FunctionComponent = () => {
     } else {
       try {
         const response = await axios.put(
-          `http://localhost:8000/api/user/${username}/follow`,
+          `${process.env.REACT_APP_API_BASE_URL}/api/user/${username}/follow`,
           {
             headers: {
               authorization: localStorage.getItem('jwttoken'),

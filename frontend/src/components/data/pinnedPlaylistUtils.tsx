@@ -21,7 +21,7 @@ export const togglePinPlaylist = async (
     }
 
     const response = await axios.put(
-      `http://localhost:8000/api/profile/pinPlaylist/${username}/${playlistId}`,
+      `${process.env.REACT_APP_API_BASE_URL}/api/profile/pinPlaylist/${username}/${playlistId}`,
       {},
       {
         headers: {
@@ -44,7 +44,7 @@ export const fetchPinPlaylist = async (
   try {
     // Fetch pinned playlists from your backend
     const response = await axios.get<PlaylistResponse>(
-      `http://localhost:8000/api/profile/getPinnedPlaylists/${username}`
+      `${process.env.REACT_APP_API_BASE_URL}/api/profile/getPinnedPlaylists/${username}`
     );
 
     const data = response.data;
@@ -81,7 +81,7 @@ export const usePinnedPlaylists = (playlistId: string) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/profile/getPinnedPlaylists/${username}`,
+          `${process.env.REACT_APP_API_BASE_URL}/api/profile/getPinnedPlaylists/${username}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem('jwttoken')}`,

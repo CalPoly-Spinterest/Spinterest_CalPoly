@@ -31,7 +31,9 @@ const startServer = async () => {
   app.use('/api', routes);
 
   app.listen(PORT, () => {
-    console.log(`Example app listening at http://localhost:${PORT}`);
+    console.log(
+      `Example app listening at ${process.env.REACT_APP_API_BASE_URL}:${PORT}`
+    );
   });
 };
 

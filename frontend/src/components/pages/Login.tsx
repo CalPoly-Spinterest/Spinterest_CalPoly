@@ -40,13 +40,16 @@ export const Login = () => {
 
   const handleLoginClick = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         // Store the token securely, e.g., in localStorage or a secure cookie
