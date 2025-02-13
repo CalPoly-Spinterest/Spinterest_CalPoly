@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import {
   Button,
   Modal,
@@ -7,12 +8,10 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 interface SignupModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  navigate: ReturnType<typeof useNavigate>;
 }
 
 export const SignupModal = ({ open, setOpen }: SignupModalProps) => {

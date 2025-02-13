@@ -68,7 +68,7 @@ export const Login = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid size={2} justifyContent="center">
-        <SignupModal open={open} setOpen={setOpen} navigate={navigate} />
+        <SignupModal open={open} setOpen={setOpen} />
         <Box
           sx={{
             mt: 8,
