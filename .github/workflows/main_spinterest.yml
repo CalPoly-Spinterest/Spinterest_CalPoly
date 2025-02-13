@@ -23,9 +23,11 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: Install dependencies
+        run: npm install -w backend --ignore-scripts
+
       - name: npm install, build, and test
         run: |
-          npm i -w backend --ignore-scripts
           npm run -w backend build --if-present
           npm run -w backend test --if-present
 
