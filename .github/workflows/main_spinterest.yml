@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: npm install -w backend
 
-      - name: npm install, build, and test
+      - name: npm build and test
         run: |
           npm run -w backend build --if-present
           npm run -w backend test --if-present
