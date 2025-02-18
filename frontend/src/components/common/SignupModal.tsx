@@ -29,7 +29,7 @@ export const SignupModal = ({ open, setOpen }: SignupModalProps) => {
         return;
       }
       const response = await fetch(
-        `${process.env.REACT_APP_SITE_BASE_URL}/api/user`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user`,
         {
           method: 'POST',
           headers: {
