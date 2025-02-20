@@ -14,8 +14,9 @@ import {
   Typography,
   Paper,
   Avatar,
+  IconButton,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Share, Visibility, VisibilityOff } from '@mui/icons-material';
 import FriendsComponent from './ProfileComponents/FriendsComponent';
 import AboutComponent from './ProfileComponents/AboutComponent';
 import PinnedMusicComponent from './ProfileComponents/PinnedMusicComponent';
@@ -249,17 +250,31 @@ export const Profile: FunctionComponent = () => {
               />
               <Typography variant="h5">{profile.display_name}</Typography>
               {/* if is own profile, render profile visibility toggle */}
-              {isOwnProfile ? (
-                <Button
-                  variant="contained"
-                  onClick={toggleProfileVisibility}
-                  startIcon={
-                    userData?.isPrivate ? <VisibilityOff /> : <Visibility />
+              <Box
+                sx={{ display: 'flex', flexDirection: 'row', mt: 2, gap: 1 }}
+              >
+                {isOwnProfile ? (
+                  <Button
+                    variant="contained"
+                    onClick={toggleProfileVisibility}
+                    startIcon={
+                      userData?.isPrivate ? <VisibilityOff /> : <Visibility />
+                    }
+                  >
+                    {userData?.isPrivate ? 'Private' : 'Public'}
+                  </Button>
+                ) : null}
+                {/* share button that copies profile link to clipboard */}
+                <IconButton
+                  onClick={() =>
+                    navigator.clipboard.writeText(window.location.href)
                   }
+                  color="default"
+                  aria-label="share this profile"
                 >
-                  {userData?.isPrivate ? 'Private' : 'Public'}
-                </Button>
-              ) : null}
+                  <Share />
+                </IconButton>
+              </Box>
               {isOwnProfile ? (
                 <Button
                   sx={{ mt: 2 }}
